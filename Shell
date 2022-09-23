@@ -1,0 +1,50 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <locale.h>
+#include <time.h>
+#include <windows.h>
+
+void shell(int* items, int count)
+{
+    int i, j, gap, k;
+    int x, a[5];
+
+    a[0] = 9; a[1] = 5; a[2] = 3; a[3] = 2; a[4] = 1;
+
+    for (k = 0; k < 5; k++) {
+        gap = a[k];
+        for (i = gap; i < count; ++i) {
+            x = items[i];
+            for (j = i - gap; (x < items[j]) && (j >= 0); j = j - gap)
+                items[j + gap] = items[j];
+            items[j + gap] = x;
+        }
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Rus");
+    char arrayInput[20];
+    int size = 0;
+    printf("Введите название файла с массивом: ");
+    scanf("%s", &arrayInput);
+    FILE* fp1 = fopen(arrayInput, "r");
+    int* g = (int*)malloc(size * sizeof(int));
+    while (fscanf(fp1, "%i", &g) != EOF)
+        size++;
+    fseek(fp1, 0, SEEK_SET);
+    int* b = (int*)malloc(size * sizeof(int));
+    for (int i = 0; i < size; i++)
+        fscanf(fp1, "%i", &b[i]);
+    fclose(fp1);
+    double test = 0.0;
+    clock_t timeStart = clock();
+    shell(b, size);
+    clock_t timeStop = clock();
+    test += (double)(timeStop - timeStart) / CLOCKS_PER_SEC;
+    system("cls");
+    printf("Размер массива: %d\n", size);
+    printf("Время сортировки: %.5f\n", test);
+    return 0;
+}
