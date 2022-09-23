@@ -1,0 +1,40 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <locale.h>
+#include <time.h>
+#include <windows.h>
+#include <stdlib.h>
+
+int comp(const void*, const void*);
+
+int main() {
+    setlocale(LC_ALL, "Rus");
+    char arrayInput[20];
+    int size = 0;
+    printf("Введите название файла с массивом: ");
+    scanf("%s", &arrayInput);
+    FILE* fp1 = fopen(arrayInput, "r");
+    int* g = (int*)malloc(size * sizeof(int));
+    while (fscanf(fp1, "%i", &g) != EOF)
+        size++;
+    fseek(fp1, 0, SEEK_SET);
+    int* b = (int*)malloc(size * sizeof(int));
+    for (int i = 0; i < size; i++)
+        fscanf(fp1, "%i", &b[i]);
+    fclose(fp1);
+    double test = 0.0;
+    clock_t timeStart = clock();
+    qsort(b, size, sizeof(int), comp);
+    clock_t timeStop = clock();
+    test += (double)(timeStop - timeStart) / CLOCKS_PER_SEC;
+    system("cls");
+    printf("Размер массива: %d\n", size);
+    printf("Время сортировки: %.5f\n", test);
+    return 0;
+}
+
+int comp(const void* i, const void* j)
+{
+    return *(int*)i - *(int*)j;
+}
